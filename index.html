@@ -492,7 +492,7 @@
 let formData = {};
 
 // ── GOOGLE SHEETS CONFIG ── Ganti dengan URL Apps Script kamu ────────────────
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGptScQ9oMvE32oPKuVBlj0HWkdCHQTwQuYWEGC19GDmWusJz5KGFPQXVmbu-BDYxH/exec";
+const GOOGLE_SCRIPT_URL = "GANTI_DENGAN_URL_APPS_SCRIPT_KAMU";
 const NAMA_BP  = "Tiara Armelia";
 const NAMA_CBO = "Narita Eliani";
 
@@ -625,7 +625,7 @@ function buildPreview() {
   <div class="word-doc" id="wordDoc">
 
     <div class="doc-header">
-      <div style="font-size:8pt;color:#888;margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;">Program Referral Internal </div>
+      <div style="font-size:8pt;color:#888;margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;">Program Referral Internal — Divisi Sales & Marketing</div>
       <h2>FORM PENGAJUAN INSENTIF REFERRAL</h2>
     </div>
 
@@ -999,7 +999,7 @@ async function downloadDocx() {
 }
 
 // ── KIRIM DATA KE GOOGLE SHEETS ──────────────────────────────────────────────
-async function sendToSheets(d) {
+function sendToSheets(d) {
   if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI")) return;
   try {
     const params = new URLSearchParams({
@@ -1026,11 +1026,9 @@ async function sendToSheets(d) {
       keterangan:      d.keterangan      || "",
       waktuSubmit:     new Date().toLocaleString("id-ID"),
     });
-    // Gunakan GET + URLSearchParams untuk menghindari CORS preflight
-    await fetch(GOOGLE_SCRIPT_URL + "?" + params.toString(), {
-      method: "GET",
-      mode: "no-cors",
-    });
+    // Gunakan Image trick — paling kompatibel di semua browser/HP
+    const img = new Image();
+    img.src = GOOGLE_SCRIPT_URL + "?" + params.toString();
   } catch(e) {
     console.warn("Gagal kirim ke Sheets:", e);
   }

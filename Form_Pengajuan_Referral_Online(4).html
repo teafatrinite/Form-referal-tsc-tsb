@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Pengajuan Insentif Referral</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap');
+
+  :root {
+    --navy: #0f1f3d;
+    --navy-mid: #1a3460;
+    --blue: #1f497d;
+    --accent: #c00000;
+    --gold: #d4a017;
+    --bg: #f0f4f9;
+    --card: #ffffff;
+    --border: #d0daea;
+    --text: #1a2640;
+    --muted: #6b7fa3;
+    --green: #375623;
+    --green-light: #e8f0e2;
+    --purple: #7030a0;
+    --purple-light: #f0e6f8;
+    --orange: #ed7d31;
+    --orange-light: #fdf0e6;
+    --section-h: 36px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── TOP HEADER ── */
+  .top-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, var(--blue) 100%);
+    padding: 20px 32px;
+    display: flex; align-items: center; gap: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo-badge {
+    width: 46px; height: 46px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), #8b0000);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 900; color: #fff;
+    box-shadow: 0 2px 12px rgba(192,0,0,0.4);
+    flex-shrink: 0;
+  }
+  .header-title { flex: 1; }
+  .header-title h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 0.3px;
+  }
+  .header-title p { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .step-pills { display: flex; gap: 8px; }
+  .pill {
+    padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    border: 1.5px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.5);
+    transition: all 0.25s;
+  }
+  .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 10px rgba(192,0,0,0.4); }
+  .pill.done { background: rgba(55,86,35,0.7); border-color: #375623; color: #c6e0b4; }
+
+  /* ── MAIN LAYOUT ── */
+  .main { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: calc(100vh - 86px); }
+
+  /* ── FORM PANEL ── */
+  .form-panel {
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    overflow-y: auto; max-height: calc(100vh - 86px);
+    padding: 28px 28px 40px;
+  }
+
+  .section-block { margin-bottom: 24px; }
+  .section-label {
+    display: flex; align-items: center; gap: 10px;
+    background: linear-gradient(90deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 1px;
+    padding: 8px 14px; border-radius: 8px; margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .section-label span {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); display: flex; align-items: center;
+    justify-content: center; font-size: 11px; font-weight: 800;
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-grid.full { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.span2 { grid-column: span 2; }
+
+  label {
+    font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  label .req { color: var(--accent); margin-left: 2px; }
+
+  input, select, textarea {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px; color: var(--text);
+    border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 9px 12px; background: #f8fafd;
+    transition: all 0.2s; outline: none;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--blue); background: #fff;
+    box-shadow: 0 0 0 3px rgba(31,73,125,0.1);
+  }
+  textarea { resize: vertical; min-height: 72px; }
+  select { cursor: pointer; }
+
+  .nett-display {
+    background: var(--green-light); border: 1.5px solid #a8c08a;
+    border-radius: 8px; padding: 9px 12px;
+    font-size: 13px; font-weight: 700; color: var(--green);
+  }
+
+  /* tiering badge */
+  .tiering-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    background: var(--purple-light); color: var(--purple);
+    border: 1.5px solid #c9a8e0; margin-top: 4px;
+  }
+
+  /* action buttons */
+  .actions { display: flex; gap: 10px; margin-top: 24px; }
+  .btn {
+    flex: 1; padding: 13px 20px; border-radius: 10px; font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px; font-weight: 700; cursor: pointer; border: none;
+    transition: all 0.2s; letter-spacing: 0.3px;
+  }
+  .btn-preview { background: var(--bg); color: var(--blue); border: 2px solid var(--blue); }
+  .btn-preview:hover { background: var(--blue); color: #fff; }
+  .btn-download {
+    background: linear-gradient(135deg, var(--accent), #8b0000); color: #fff;
+    box-shadow: 0 4px 16px rgba(192,0,0,0.3);
+  }
+  .btn-download:hover { box-shadow: 0 6px 20px rgba(192,0,0,0.45); transform: translateY(-1px); }
+  .btn-download:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-reset { flex: 0 0 auto; background: transparent; color: var(--muted); border: 2px solid var(--border); padding: 13px 16px; }
+  .btn-reset:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── PREVIEW PANEL ── */
+  .preview-panel {
+    background: #e8edf5;
+    overflow-y: auto; max-height: calc(100vh - 86px);
+    padding: 24px 20px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .preview-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .preview-label::before, .preview-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* Word document preview */
+  .word-doc {
+    background: #fff;
+    width: 100%; max-width: 660px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+    border-radius: 2px;
+    padding: 40px 44px;
+    font-family: 'Calibri', 'Plus Jakarta Sans', sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.45;
+    position: relative;
+  }
+
+  .doc-header {
+    text-align: center; margin-bottom: 18px;
+    border-bottom: 3px double #1f497d; padding-bottom: 14px;
+  }
+  .doc-header h2 {
+    font-size: 15pt; font-weight: 800; color: #1f497d;
+    letter-spacing: 1px; font-family: 'Playfair Display', serif;
+  }
+  .doc-meta-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px 20px;
+    margin: 12px 0 16px; font-size: 9.5pt;
+  }
+  .doc-meta-item { display: flex; gap: 6px; }
+  .doc-meta-item .mk { font-weight: 700; color: #1f497d; min-width: 110px; }
+
+  .doc-section-title {
+    background: #1f497d; color: #fff;
+    font-size: 9pt; font-weight: 700; letter-spacing: 0.8px;
+    padding: 5px 10px; margin: 14px 0 8px; border-radius: 2px;
+  }
+
+  .doc-table { width: 100%; border-collapse: collapse; font-size: 9.5pt; margin-bottom: 10px; }
+  .doc-table td { border: 1px solid #bdd0e8; padding: 5px 8px; vertical-align: top; }
+  .doc-table .lbl { background: #deeaf1; font-weight: 600; color: #1f497d; width: 30%; }
+  .doc-table .val { background: #fff; }
+  .doc-table.two-col .lbl { width: 22%; }
+
+  .calc-box {
+    background: #f0f7e8; border: 1.5px solid #a8c08a;
+    border-radius: 4px; padding: 10px 14px; margin: 10px 0;
+  }
+  .calc-row { display: flex; justify-content: space-between; font-size: 9.5pt; padding: 2px 0; }
+  .calc-row.total { font-weight: 800; color: #375623; border-top: 1.5px solid #a8c08a; margin-top: 6px; padding-top: 6px; }
+  .calc-row.fee { color: #7030a0; font-weight: 700; }
+
+  .approval-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    margin-top: 8px;
+  }
+  .approval-box {
+    border: 1px solid #bdd0e8; border-radius: 3px; padding: 8px 6px;
+    text-align: center; font-size: 8.5pt;
+  }
+  .approval-box .role { font-weight: 700; color: #1f497d; font-size: 8pt; margin-bottom: 4px; }
+  .approval-box .sig-area {
+    height: 36px; border-bottom: 1px solid #333; margin: 4px 6px;
+  }
+  .approval-box .name-line { color: #555; margin-top: 4px; font-size: 8pt; }
+
+  .doc-note {
+    background: #fff8e6; border-left: 3px solid #d4a017;
+    font-size: 8.5pt; padding: 7px 10px; color: #555; margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  .empty-state {
+    text-align: center; padding: 60px 20px; color: var(--muted);
+  }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state h3 { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .empty-state p { font-size: 13px; }
+
+  /* success toast */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    background: var(--green); color: #fff; padding: 12px 20px;
+    border-radius: 10px; font-size: 13px; font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    transform: translateY(80px); opacity: 0; transition: all 0.3s;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* mobile */
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 1fr; }
+    .preview-panel { max-height: none; }
+    .form-panel { max-height: none; }
+    .step-pills { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<header class="top-header">
+  <div class="logo-badge">R</div>
+  <div class="header-title">
+    <h1>Form Pengajuan Insentif Referral</h1>
+    <p>Program Referral Internal — Divisi Sales & Marketing</p>
+  </div>
+  <div class="step-pills">
+    <div class="pill active" id="pill1">① Isi Data</div>
+    <div class="pill" id="pill2">② Preview</div>
+    <div class="pill" id="pill3">③ Download</div>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- ═══ FORM PANEL ═══ -->
+  <div class="form-panel" id="formPanel">
+
+    <!-- AUTO NUMBER + DATE -->
+    <div style="display:flex;gap:12px;margin-bottom:20px;background:#f0f4f9;border-radius:10px;padding:12px 16px;">
+      <div style="flex:1">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">No. Pengajuan</div>
+        <div style="font-size:14px;font-weight:800;color:var(--blue)" id="noRef">REF/2026/—</div>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Tanggal Pengajuan</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text)" id="tglPengajuan"></div>
+      </div>
+      <div style="flex:0 0 auto;display:flex;align-items:center;">
+        <button class="btn btn-reset" onclick="resetForm()" title="Reset Form" style="padding:8px 12px;font-size:11px;">↺ Reset</button>
+      </div>
+    </div>
+
+    <!-- A. DATA REFERRER -->
+    <div class="section-block">
+      <div class="section-label"><span>A</span> Data Referrer (Pemberi Referral)</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nama Referrer <span class="req">*</span></label>
+          <input type="text" id="namaReferrer" placeholder="Nama lengkap" oninput="liveUpdate()">
+        </div>
+        <div class="form-group">
+          <label>ID Karyawan <span class="req">*</span></label>
+          <input type="text" id="idKaryawan" placeholder="EMP-00123" oninput="liveUpdate()">
+        </div>
+        <div class="form-group">
+          <label>Jabatan <span class="req">*</span></label>
+          <select id="jabatan" onchange="toggleJabatanLain(); liveUpdate()">
+            <option value="">— Pilih Jabatan —</option>
+            <option>Sales Staff</option>
+            <option>Senior Sales Staff</option>
+            <option>Sales Executive</option>
+            <option>Sales Leader</option>
+            <option>Finance Staff</option>
+            <option>Operation Staff</option>
+            <option>HRD Staff</option>
+            <option>Engineering Staff</option>
+            <option>IT Staff</option>
+            <option>Lainnya</option>
+          </select>
+          <input type="text" id="jabatanLain" placeholder="Tulis jabatan Anda..." oninput="liveUpdate()"
+            style="display:none;margin-top:6px;border-color:#7030a0;background:#f8f0ff;">
+        </div>
+        <div class="form-group">
+          <label>Divisi / Departemen <span class="req">*</span></label>
+          <select id="divisi" onchange="liveUpdate()">
+            <option value="">— Pilih Divisi —</option>
+            <option>Sales & Marketing</option>
+            <option>Finance</option>
+            <option>Operation</option>
+            <option>HRD</option>
+            <option>Engineering</option>
+            <option>IT</option>
+            <option>Lainnya</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cabang <span class="req">*</span></label>
+          <input type="text" id="cabang" placeholder="Contoh: TSC, Bekasi, dll" oninput="liveUpdate()">
+        </div>
+        <div class="form-group">
+          <label>No. HP / WA <span class="req">*</span></label>
+          <input type="text" id="noHpRef" placeholder="08xx-xxxx-xxxx" oninput="liveUpdate()">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="emailRef" placeholder="nama@company.com" oninput="liveUpdate()">
+        </div>
+        <div class="form-group">
+          <label>No. Rekening (Bank - No. Rek)</label>
+          <input type="text" id="noRek" placeholder="BCA - 1234567890" oninput="liveUpdate()">
+        </div>
+      </div>
+    </div>
+
+    <!-- B. DATA CUSTOMER -->
+    <div class="section-block">
+      <div class="section-label"><span>B</span> Data Customer & Transaksi Referral</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nama Customer <span class="req">*</span></label>
+          <input type="text" id="namaCustomer" placeholder="PT / CV / Nama individu" oninput="liveUpdate()">
+        </div>
+        <div class="form-group">
+          <label>Nama PIC <span class="req">*</span></label>
+          <input type="text" id="namaPIC" placeholder="Nama kontak person" oninput="liveUpdate()">
+        </div>
+        <div class="form-group">
+          <label>Jabatan PIC</label>
+          <input type="text" id="jabatanPIC" placeholder="Head of Marketing, dll" oninput="liveUpdate()">
+        </div>
+        <div class="form-group">
+          <label>No. HP / WA Customer</label>
+          <input type="text" id="noHpCustomer" placeholder="08xx-xxxx-xxxx" oninput="liveUpdate()">
+        </div>
+        <div class="form-group">
+          <label>Cabang Penjualan <span class="req">*</span></label>
+          <input type="text" id="cabangPenjualan" placeholder="Cabang yang menangani" oninput="liveUpdate()">
+        </div>
+        <div class="form-group">
+          <label>Sektor</label>
+          <select id="sektor" onchange="liveUpdate()">
+            <option value="">— Pilih Sektor —</option>
+            <option>Manufaktur / Industri Pengolahan</option>
+            <option>Perdagangan & Retail</option>
+            <option>Jasa & Keuangan</option>
+            <option>Pemerintahan / BUMN</option>
+            <option>Pendidikan</option>
+            <option>Kesehatan</option>
+            <option>Teknologi & Informasi</option>
+            <option>Pariwisata & Hiburan</option>
+            <option>Properti & Konstruksi</option>
+            <option>Lainnya</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Industri</label>
+          <input type="text" id="industri" placeholder="Contoh: Otomotif, FMCG, dll" oninput="liveUpdate()">
+        </div>
+        <div class="form-group">
+          <label>Hubungan dengan Referrer</label>
+          <input type="text" id="hubungan" placeholder="Kolega, teman, dll" oninput="liveUpdate()">
+        </div>
+        <div class="form-group">
+          <label>PAX (Estimasi Peserta)</label>
+          <input type="number" id="pax" placeholder="500" min="1" oninput="liveUpdate()">
+        </div>
+      </div>
+    </div>
+
+    <!-- C. RINGKASAN -->
+    <div class="section-block">
+      <div class="section-label"><span>C</span> Ringkasan Referral</div>
+      <div class="form-grid full">
+        <div class="form-group">
+          <label>Ringkasan (otomatis dari data di atas)</label>
+          <div id="ringkasanDisplay" style="
+            background:#f0f4f9; border:1.5px solid var(--border); border-radius:8px;
+            padding:11px 14px; font-size:13px; color:var(--text); line-height:1.7;
+            min-height:48px;">
+            <span style="color:var(--muted);font-size:12px;">Isi data Referrer & Customer untuk menghasilkan ringkasan otomatis</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D. APPROVAL INFO -->
+    <div class="section-block">
+      <div class="section-label"><span>D</span> Informasi Approval</div>
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label>Nama Diketahui (Head / CFO / COO) <span class="req">*</span></label>
+          <input type="text" id="namaDiketahui" placeholder="Nama atasan yang mengetahui pengajuan ini" oninput="liveUpdate()">
+        </div>
+        <div class="form-group" style="pointer-events:none;opacity:0.7">
+          <label>Diverifikasi (Business Performance)</label>
+          <input type="text" value="Tiara Armelia" readonly style="background:#f0f4f9;color:var(--muted);font-weight:600;">
+        </div>
+        <div class="form-group" style="pointer-events:none;opacity:0.7">
+          <label>Disetujui (CBO / Direksi)</label>
+          <input type="text" value="Narita Eliani" readonly style="background:#f0f4f9;color:var(--muted);font-weight:600;">
+        </div>
+      </div>
+    </div>
+
+    <!-- E. KETERANGAN TAMBAHAN -->
+    <div class="section-block">
+      <div class="section-label"><span>E</span> Keterangan Tambahan</div>
+      <div class="form-grid full">
+        <div class="form-group">
+          <label>Deskripsi / Catatan Referral</label>
+          <textarea id="keterangan" placeholder="Jelaskan singkat latar belakang referral ini..." oninput="liveUpdate()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="actions">
+      <button class="btn btn-preview" onclick="buildPreview()">👁 Preview Dokumen</button>
+      <button class="btn btn-download" id="btnDownload" onclick="downloadDocx()" disabled>⬇ Download Word (.docx)</button>
+    </div>
+
+  </div><!-- /form-panel -->
+
+  <!-- ═══ PREVIEW PANEL ═══ -->
+  <div class="preview-panel" id="previewPanel">
+    <div class="preview-label">Preview Dokumen Word</div>
+    <div id="previewContent">
+      <div class="empty-state">
+        <div class="icon">📄</div>
+        <h3>Dokumen belum dipreview</h3>
+        <p>Isi data di form sebelah kiri,<br>lalu klik <strong>Preview Dokumen</strong></p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── GLOBALS ──────────────────────────────────────────────────────────────────
+let formData = {};
+const NAMA_BP  = "Tiara Armelia";
+const NAMA_CBO = "Narita Eliani";
+
+// ── NO PENGAJUAN: TIMESTAMP + KODE ACAK UNIK (tanpa counter, tanpa backend) ──
+function generateNoRef() {
+  const now = new Date();
+  const year  = now.getFullYear();
+  const bulan = String(now.getMonth() + 1).padStart(2, "0");
+  const tgl   = String(now.getDate()).padStart(2, "0");
+  const jam   = String(now.getHours()).padStart(2, "0");
+  const menit = String(now.getMinutes()).padStart(2, "0");
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // hapus karakter mirip (I,O,0,1)
+  let kode = "";
+  for (let i = 0; i < 5; i++) kode += chars[Math.floor(Math.random() * chars.length)];
+  return `REF/${year}/${tgl}${bulan}-${jam}${menit}-${kode}`;
+}
+
+function fmtTanggal(d) {
+  const months = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agt","Sep","Okt","Nov","Des"];
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+// ── TOGGLE JABATAN LAINNYA ────────────────────────────────────────────────────
+function toggleJabatanLain() {
+  const sel = document.getElementById("jabatan");
+  const inp = document.getElementById("jabatanLain");
+  if (sel.value === "Lainnya") {
+    inp.style.display = "block";
+    inp.focus();
+  } else {
+    inp.style.display = "none";
+    inp.value = "";
+  }
+}
+
+// ── LIVE UPDATE (collect form data + build ringkasan) ─────────────────────────
+function liveUpdate() {
+  const jabatanRaw = v("jabatan");
+  const jabatanFinal = jabatanRaw === "Lainnya"
+    ? (v("jabatanLain") || "Lainnya")
+    : jabatanRaw;
+
+  formData = {
+    noRef: document.getElementById("noRef").textContent,
+    tanggal: document.getElementById("tglPengajuan").textContent,
+    namaReferrer: v("namaReferrer"),
+    idKaryawan:   v("idKaryawan"),
+    jabatan:      jabatanFinal,
+    divisi:       v("divisi"),
+    cabang:       v("cabang"),
+    noHpRef:      v("noHpRef"),
+    emailRef:     v("emailRef"),
+    noRek:        v("noRek"),
+    namaCustomer: v("namaCustomer"),
+    namaPIC:      v("namaPIC"),
+    jabatanPIC:   v("jabatanPIC"),
+    noHpCustomer: v("noHpCustomer"),
+    cabangPenjualan: v("cabangPenjualan"),
+    sektor:       v("sektor"),
+    industri:     v("industri"),
+    hubungan:     v("hubungan"),
+    pax:          v("pax"),
+    namaDiketahui: v("namaDiketahui"),
+    namaBP:       NAMA_BP,
+    namaCBO:      NAMA_CBO,
+    keterangan:   v("keterangan"),
+  };
+
+  // Build ringkasan C
+  buildRingkasan();
+}
+function v(id) { return document.getElementById(id).value.trim(); }
+
+// ── INIT DATE & NO REF PREVIEW ────────────────────────────────────────────────
+(function init() {
+  const now = new Date();
+  document.getElementById("tglPengajuan").textContent = fmtTanggal(now);
+  // Tampilkan preview format nomor (akan digenerate ulang saat download)
+  document.getElementById("noRef").textContent = "REF/YYYY/DDMM-HHMM-XXXXX (digenerate saat download)";
+  document.getElementById("noRef").style.color = "#aaa";
+  document.getElementById("noRef").style.fontSize = "12px";
+})();
+
+// ── BUILD RINGKASAN C ─────────────────────────────────────────────────────────
+function buildRingkasan() {
+  const d = formData;
+  const parts = [];
+  if (d.namaReferrer)   parts.push(`<strong>Referrer:</strong> ${d.namaReferrer}`);
+  if (d.namaCustomer)   parts.push(`<strong>Customer:</strong> ${d.namaCustomer}`);
+  if (d.cabangPenjualan)parts.push(`<strong>Cabang:</strong> ${d.cabangPenjualan}`);
+  if (d.sektor)         parts.push(`<strong>Sektor:</strong> ${d.sektor}`);
+  if (d.industri)       parts.push(`<strong>Industri:</strong> ${d.industri}`);
+  if (d.pax)            parts.push(`<strong>Pax (est):</strong> ${d.pax}`);
+
+  const el = document.getElementById("ringkasanDisplay");
+  if (parts.length === 0) {
+    el.innerHTML = `<span style="color:var(--muted);font-size:12px;">Isi data Referrer & Customer untuk menghasilkan ringkasan otomatis</span>`;
+  } else {
+    el.innerHTML = parts.join(`<span style="color:var(--muted);margin:0 6px">|</span>`);
+  }
+  formData.ringkasan = parts.map(p => p.replace(/<[^>]+>/g,'')).join('  ');
+}
+
+// ── CALC INSENTIF (kept for compatibility but not used in form) ───────────────
+function calcInsentif() { liveUpdate(); }
+
+// ── BUILD PREVIEW ─────────────────────────────────────────────────────────────
+function buildPreview() {
+  liveUpdate();
+  const d = formData;
+
+  // pill update
+  document.getElementById("pill1").className = "pill done";
+  document.getElementById("pill2").className = "pill active";
+  document.getElementById("pill3").className = "pill";
+
+  document.getElementById("previewContent").innerHTML = `
+  <div class="word-doc" id="wordDoc">
+
+    <div class="doc-header">
+      <div style="font-size:8pt;color:#888;margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;">Program Referral Internal — Divisi Sales & Marketing</div>
+      <h2>FORM PENGAJUAN INSENTIF REFERRAL</h2>
+    </div>
+
+    <div class="doc-meta-row">
+      <div class="doc-meta-item"><span class="mk">No. Pengajuan</span><span>: ${d.noRef || "—"}</span></div>
+      <div class="doc-meta-item"><span class="mk">Tanggal Pengajuan</span><span>: ${d.tanggal || "—"}</span></div>
+    </div>
+
+    <!-- A. REFERRER -->
+    <div class="doc-section-title">A. DATA REFERRER (PEMBERI REFERRAL)</div>
+    <table class="doc-table two-col">
+      <tr>
+        <td class="lbl">Nama Referrer</td><td class="val">${d.namaReferrer||"—"}</td>
+        <td class="lbl">ID Karyawan</td><td class="val">${d.idKaryawan||"—"}</td>
+      </tr>
+      <tr>
+        <td class="lbl">Jabatan</td><td class="val">${d.jabatan||"—"}</td>
+        <td class="lbl">Divisi</td><td class="val">${d.divisi||"—"}</td>
+      </tr>
+      <tr>
+        <td class="lbl">Cabang</td><td class="val">${d.cabang||"—"}</td>
+        <td class="lbl">No. HP / WA</td><td class="val">${d.noHpRef||"—"}</td>
+      </tr>
+      <tr>
+        <td class="lbl">Email</td><td class="val">${d.emailRef||"—"}</td>
+        <td class="lbl">No. Rekening</td><td class="val">${d.noRek||"—"}</td>
+      </tr>
+    </table>
+
+    <!-- B. CUSTOMER -->
+    <div class="doc-section-title">B. DATA CUSTOMER & TRANSAKSI REFERRAL</div>
+    <table class="doc-table two-col">
+      <tr>
+        <td class="lbl">Nama Customer</td><td class="val">${d.namaCustomer||"—"}</td>
+        <td class="lbl">Nama PIC</td><td class="val">${d.namaPIC||"—"}</td>
+      </tr>
+      <tr>
+        <td class="lbl">Jabatan PIC</td><td class="val">${d.jabatanPIC||"—"}</td>
+        <td class="lbl">No. HP Customer</td><td class="val">${d.noHpCustomer||"—"}</td>
+      </tr>
+      <tr>
+        <td class="lbl">Cabang Penjualan</td><td class="val">${d.cabangPenjualan||"—"}</td>
+        <td class="lbl">PAX (Estimasi)</td><td class="val">${d.pax||"—"}</td>
+      </tr>
+      <tr>
+        <td class="lbl">Sektor</td><td class="val">${d.sektor||"—"}</td>
+        <td class="lbl">Industri</td><td class="val">${d.industri||"—"}</td>
+      </tr>
+      <tr>
+        <td class="lbl">Hubungan dg Referrer</td><td class="val" colspan="3">${d.hubungan||"—"}</td>
+      </tr>
+    </table>
+
+    <!-- C. RINGKASAN -->
+    <div class="doc-section-title">C. RINGKASAN REFERRAL</div>
+    <table class="doc-table">
+      <tr>
+        <td style="padding:10px 12px;background:#f0f4f9;font-size:9.5pt;line-height:1.9;">
+          ${[
+            d.namaReferrer ? `<strong style="color:#1f497d">Referrer:</strong> ${d.namaReferrer}` : '',
+            d.namaCustomer ? `<strong style="color:#1f497d">Customer:</strong> ${d.namaCustomer}` : '',
+            d.cabangPenjualan ? `<strong style="color:#1f497d">Cabang:</strong> ${d.cabangPenjualan}` : '',
+            d.sektor ? `<strong style="color:#1f497d">Sektor:</strong> ${d.sektor}` : '',
+            d.industri ? `<strong style="color:#1f497d">Industri:</strong> ${d.industri}` : '',
+            d.pax ? `<strong style="color:#1f497d">Pax (est):</strong> ${d.pax}` : '',
+          ].filter(Boolean).join('&nbsp;&nbsp;<span style="color:#aaa">|</span>&nbsp;&nbsp;') || '—'}
+        </td>
+      </tr>
+    </table>
+
+    ${d.keterangan ? `
+    <!-- E. KETERANGAN -->
+    <div class="doc-section-title">E. KETERANGAN TAMBAHAN</div>
+    <table class="doc-table"><tr><td style="padding:8px 10px;background:#fffdf0;font-size:9.5pt">${d.keterangan}</td></tr></table>
+    ` : ""}
+
+    <!-- F. PERNYATAAN -->
+    <div class="doc-section-title">F. PERNYATAAN</div>
+    <div style="font-size:9pt;color:#444;padding:6px 0;line-height:1.55;">
+      Referensi ini dibuat dengan sebenarnya berdasarkan data dan informasi dari customer. Apabila di kemudian hari ditemukan ketidaksesuaian data, maka Referrer bersedia untuk dilakukan verifikasi lebih lanjut sesuai ketentuan yang berlaku.
+    </div>
+
+    <!-- G. APPROVAL FLOW -->
+    <div class="doc-section-title">G. APPROVAL FLOW</div>
+    <div class="approval-grid">
+      <div class="approval-box">
+        <div class="role">Diajukan Oleh<br>(Referrer)</div>
+        <div class="sig-area"></div>
+        <div class="name-line">${d.namaReferrer||"_______________"}</div>
+        <div class="name-line" style="color:#aaa;margin-top:2px">Tgl: ___________</div>
+      </div>
+      <div class="approval-box">
+        <div class="role">Diketahui<br>(Head / CFO / COO)</div>
+        <div class="sig-area"></div>
+        <div class="name-line">${d.namaDiketahui || "_______________"}</div>
+        <div class="name-line" style="color:#aaa;margin-top:2px">Tgl: ___________</div>
+      </div>
+      <div class="approval-box">
+        <div class="role">Diverifikasi<br>(Business Performance)</div>
+        <div class="sig-area"></div>
+        <div class="name-line" style="color:#1f497d;font-weight:600">${NAMA_BP}</div>
+        <div class="name-line" style="color:#aaa;margin-top:2px">Tgl: ___________</div>
+      </div>
+      <div class="approval-box">
+        <div class="role">Disetujui<br>(CBO / Direksi)</div>
+        <div class="sig-area"></div>
+        <div class="name-line" style="color:#1f497d;font-weight:600">${NAMA_CBO}</div>
+        <div class="name-line" style="color:#aaa;margin-top:2px">Tgl: ___________</div>
+      </div>
+    </div>
+
+    <div class="doc-note">
+      <strong>Catatan:</strong> Insentif akan diproses setelah mendapat persetujuan CBO Direksi &amp; pembayaran customer terkonfirmasi lunas. Form berlaku untuk 1 (satu) transaksi referral.<br>
+      ** Referrer menyatakan bahwa referensi ini dibuat berdasarkan informasi yang sebenarnya.<br>
+      ** Atasan terkait wajib menandatangani form pengajuan ini.
+    </div>
+
+  </div>`;
+
+  document.getElementById("btnDownload").disabled = false;
+  document.getElementById("pill3").className = "pill";
+  document.getElementById("previewPanel").scrollTop = 0;
+}
+
+// ── DOWNLOAD DOCX ─────────────────────────────────────────────────────────────
+async function downloadDocx() {
+  liveUpdate();
+  const d = formData;
+
+  // Assign final No. Pengajuan & Tanggal at download time
+  const noRef = generateNoRef();
+  const tanggalDownload = fmtTanggal(new Date());
+  d.noRef = noRef;
+  d.tanggal = tanggalDownload;
+
+  // Update display in header
+  const noEl = document.getElementById("noRef");
+  noEl.textContent = noRef;
+  noEl.style.color = "var(--blue)";
+  noEl.style.fontSize = "14px";
+  document.getElementById("tglPengajuan").textContent = tanggalDownload;
+
+  document.getElementById("pill3").className = "pill active";
+
+  const {
+    Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+    AlignmentType, BorderStyle, WidthType, ShadingType, VerticalAlign
+  } = docx;
+
+  const bdr = s => ({ style: BorderStyle.SINGLE, size: s||1, color: "BDD0E8" });
+  const borders = { top: bdr(), bottom: bdr(), left: bdr(), right: bdr() };
+  const noBorder = { style: BorderStyle.NIL };
+  const noBorders = { top: noBorder, bottom: noBorder, left: noBorder, right: noBorder };
+  const hdrBorders = {
+    top: { style: BorderStyle.SINGLE, size: 4, color: "1F497D" },
+    bottom: { style: BorderStyle.SINGLE, size: 4, color: "1F497D" },
+    left: { style: BorderStyle.SINGLE, size: 4, color: "1F497D" },
+    right: { style: BorderStyle.SINGLE, size: 4, color: "1F497D" },
+  };
+
+  const f = (text, opts={}) => new TextRun({ text: String(text||"—"), font:"Arial", size:20, ...opts });
+  const p = (children, opts={}) => new Paragraph({ children: Array.isArray(children)?children:[children], ...opts });
+  const cell = (text, opts={}) => {
+    const { bg="FFFFFF", bold=false, color="000000", colSpan=1, right=false, size=20 } = opts;
+    return new TableCell({
+      columnSpan: colSpan,
+      borders, verticalAlign: VerticalAlign.CENTER,
+      shading: { fill: bg, type: ShadingType.CLEAR },
+      margins: { top:70, bottom:70, left:100, right:100 },
+      children: [p(f(text, {bold, color, size}), { alignment: right ? AlignmentType.RIGHT : AlignmentType.LEFT })]
+    });
+  };
+  const lbl = (text) => cell(text, { bg:"DEEAF1", bold:true, color:"1F497D" });
+  const val = (text) => cell(text);
+  const secTitle = (text) => new TableRow({ children: [new TableCell({
+    columnSpan: 4, borders: hdrBorders,
+    shading: { fill:"1F497D", type:ShadingType.CLEAR },
+    margins: { top:80, bottom:80, left:120, right:120 },
+    children: [p(f(text, { bold:true, color:"FFFFFF", size:20 }), { alignment: AlignmentType.LEFT })]
+  })]});
+
+  // Build ringkasan text
+  const ringkasanParts = [
+    d.namaReferrer   ? `Referrer: ${d.namaReferrer}`           : '',
+    d.namaCustomer   ? `Customer: ${d.namaCustomer}`           : '',
+    d.cabangPenjualan? `Cabang: ${d.cabangPenjualan}`          : '',
+    d.sektor         ? `Sektor: ${d.sektor}`                   : '',
+    d.industri       ? `Industri: ${d.industri}`               : '',
+    d.pax            ? `Pax (est): ${d.pax}`                   : '',
+  ].filter(Boolean);
+
+  const ringkasanRuns = [];
+  ringkasanParts.forEach((part, i) => {
+    const [key, ...rest] = part.split(': ');
+    ringkasanRuns.push(new TextRun({ text: key + ': ', font:"Arial", size:20, bold:true, color:"1F497D" }));
+    ringkasanRuns.push(new TextRun({ text: rest.join(': '), font:"Arial", size:20 }));
+    if (i < ringkasanParts.length - 1)
+      ringkasanRuns.push(new TextRun({ text: '   |   ', font:"Arial", size:20, color:"AAAAAA" }));
+  });
+
+  const ringkasanTable = new Table({
+    width: { size: 9206, type: WidthType.DXA },
+    columnWidths: [9206],
+    rows: [
+      new TableRow({ children: [new TableCell({
+        columnSpan: 4, borders: hdrBorders,
+        shading: { fill:"1F497D", type:ShadingType.CLEAR },
+        margins: { top:80, bottom:80, left:120, right:120 },
+        children: [p(f("C. RINGKASAN REFERRAL", { bold:true, color:"FFFFFF", size:20 }), { alignment: AlignmentType.LEFT })]
+      })]}),
+      new TableRow({ children: [new TableCell({
+        borders,
+        shading: { fill:"F0F4F9", type:ShadingType.CLEAR },
+        margins: { top:100, bottom:100, left:140, right:140 },
+        children: [new Paragraph({ children: ringkasanRuns.length > 0 ? ringkasanRuns : [f("—")] })]
+      })]}),
+    ]
+  });
+
+  const metaTable = new Table({
+    width: { size: 9206, type: WidthType.DXA },
+    columnWidths: [2000, 180, 7026],
+    rows: [
+      ["No. Pengajuan", d.noRef],
+      ["Tanggal Pengajuan", d.tanggal],
+    ].map(([k, vv]) => new TableRow({ children: [
+      new TableCell({ borders:noBorders, children:[p(f(k,{bold:true,color:"1F497D"}))] }),
+      new TableCell({ borders:noBorders, children:[p(f(":"))] }),
+      new TableCell({ borders:noBorders, children:[p(f(vv||"—"))] }),
+    ]}))
+  });
+
+  const refTable = new Table({
+    width: { size: 9206, type: WidthType.DXA },
+    columnWidths: [2000, 2600, 2000, 2606],
+    rows: [
+      secTitle("A. DATA REFERRER (PEMBERI REFERRAL)"),
+      new TableRow({ children:[lbl("Nama Referrer"), val(d.namaReferrer), lbl("ID Karyawan"), val(d.idKaryawan)] }),
+      new TableRow({ children:[lbl("Jabatan"), val(d.jabatan), lbl("Divisi"), val(d.divisi)] }),
+      new TableRow({ children:[lbl("Cabang"), val(d.cabang), lbl("No. HP / WA"), val(d.noHpRef)] }),
+      new TableRow({ children:[lbl("Email"), val(d.emailRef), lbl("No. Rekening"), val(d.noRek)] }),
+    ]
+  });
+
+  const custTable = new Table({
+    width: { size: 9206, type: WidthType.DXA },
+    columnWidths: [2000, 2600, 2000, 2606],
+    rows: [
+      secTitle("B. DATA CUSTOMER & TRANSAKSI REFERRAL"),
+      new TableRow({ children:[lbl("Nama Customer"), val(d.namaCustomer), lbl("Nama PIC"), val(d.namaPIC)] }),
+      new TableRow({ children:[lbl("Jabatan PIC"), val(d.jabatanPIC), lbl("No. HP Customer"), val(d.noHpCustomer)] }),
+      new TableRow({ children:[lbl("Cabang Penjualan"), val(d.cabangPenjualan), lbl("PAX (Estimasi)"), val(d.pax)] }),
+      new TableRow({ children:[lbl("Sektor"), val(d.sektor), lbl("Industri"), val(d.industri)] }),
+      new TableRow({ children:[lbl("Hubungan dg Referrer"), new TableCell({columnSpan:3, borders, shading:{fill:"FFFFFF",type:ShadingType.CLEAR}, margins:{top:70,bottom:70,left:100,right:100}, children:[p(f(d.hubungan||"—"))]})] }),
+    ]
+  });
+
+  const appTable = new Table({
+    width: { size: 9206, type: WidthType.DXA },
+    columnWidths: [2301, 2301, 2302, 2302],
+    rows: [
+      secTitle("G. APPROVAL FLOW"),
+      new TableRow({ children: [
+        ["Diajukan Oleh\n(Referrer)", "Diketahui\n(Head/CFO/COO)", "Diverifikasi\n(Business Performance)", "Disetujui\n(CBO/Direksi)"]
+        .map(role => new TableCell({
+          borders, shading:{fill:"DEEAF1",type:ShadingType.CLEAR}, margins:{top:80,bottom:80,left:100,right:100},
+          children:[p(f(role,{bold:true,color:"1F497D",size:18}),{alignment:AlignmentType.CENTER})]
+        }))
+      ]}),
+      new TableRow({ children: [
+        [
+          d.namaReferrer || "_______________",
+          d.namaDiketahui || "_______________",
+          NAMA_BP,
+          NAMA_CBO,
+        ].map((nm, i) => new TableCell({
+          borders, margins:{top:80,bottom:80,left:100,right:100},
+          children:[
+            p(f("       ",{size:32}),{alignment:AlignmentType.CENTER}),
+            new Paragraph({border:{top:{style:BorderStyle.SINGLE,size:4,color:"333333"}}, alignment:AlignmentType.CENTER, children:[f("(tanda tangan)",{color:"AAAAAA",size:16,italic:true})]}),
+            p(f(nm,{size:18, bold: i>=2, color: i>=2 ? "1F497D" : "000000"}),{alignment:AlignmentType.CENTER}),
+            p(f("Tgl: ___________",{size:16,color:"AAAAAA"}),{alignment:AlignmentType.CENTER}),
+          ]
+        }))
+      ]}),
+    ]
+  });
+
+  const ketRows = d.keterangan ? [
+    new Table({
+      width:{ size:9206, type:WidthType.DXA }, columnWidths:[9206],
+      rows:[
+        secTitle("E. KETERANGAN TAMBAHAN"),
+        new TableRow({ children:[new TableCell({borders, shading:{fill:"FFFDF0",type:ShadingType.CLEAR}, margins:{top:80,bottom:80,left:120,right:120}, children:[p(f(d.keterangan))]})]}),
+      ]
+    }),
+    p(""),
+  ] : [];
+
+  const doc = new Document({
+    sections: [{
+      properties: { page:{ size:{width:11906,height:16838}, margin:{top:1080,right:1080,bottom:1080,left:1080} }},
+      children: [
+        // Header
+        p([f("FORM PENGAJUAN INSENTIF REFERRAL", {bold:true, size:28, color:"1F497D"})], {
+          alignment: AlignmentType.CENTER,
+          border:{ bottom:{ style:BorderStyle.THICK, size:12, color:"1F497D", space:6 }},
+          spacing:{ after:80 }
+        }),
+        p([f("Program Referral Internal  —  Divisi Sales & Marketing", {size:18, color:"888888", italic:true})], {
+          alignment: AlignmentType.CENTER, spacing:{ after:200 }
+        }),
+        metaTable,
+        p("", { spacing:{ after:120 }}),
+        refTable,
+        p("", { spacing:{ after:100 }}),
+        custTable,
+        p("", { spacing:{ after:100 }}),
+        ringkasanTable,
+        p("", { spacing:{ after:100 }}),
+        ...ketRows,
+        // Pernyataan
+        new Table({
+          width:{size:9206,type:WidthType.DXA}, columnWidths:[9206],
+          rows:[
+            secTitle("F. PERNYATAAN"),
+            new TableRow({ children:[new TableCell({borders, margins:{top:80,bottom:80,left:120,right:120},
+              children:[p(f("Referensi ini dibuat dengan sebenarnya berdasarkan data dan informasi dari customer. Apabila di kemudian hari ditemukan ketidaksesuaian data, maka Referrer bersedia untuk dilakukan verifikasi lebih lanjut sesuai ketentuan yang berlaku."),{alignment:AlignmentType.JUSTIFIED})]})]}),
+          ]
+        }),
+        p("", { spacing:{ after:100 }}),
+        appTable,
+        p("", { spacing:{ after:80 }}),
+        // Catatan
+        new Table({
+          width:{size:9206,type:WidthType.DXA}, columnWidths:[9206],
+          rows:[new TableRow({ children:[new TableCell({
+            borders:{ top:{style:BorderStyle.SINGLE,size:4,color:"D4A017"}, bottom:{style:BorderStyle.SINGLE,size:4,color:"D4A017"}, left:{style:BorderStyle.THICK,size:12,color:"D4A017"}, right:{style:BorderStyle.SINGLE,size:1,color:"D4A017"} },
+            shading:{fill:"FFFBF0",type:ShadingType.CLEAR}, margins:{top:80,bottom:80,left:120,right:120},
+            children:[
+              p(f("Catatan Penting:",{bold:true,color:"856400"})),
+              p(f("• Insentif akan diproses setelah mendapat persetujuan CBO Direksi & pembayaran customer terkonfirmasi lunas.",{size:18})),
+              p(f("• Form berlaku untuk 1 (satu) transaksi referral.",{size:18})),
+              p(f("• Referrer menyatakan bahwa referensi ini dibuat berdasarkan informasi yang sebenarnya.",{size:18})),
+              p(f("• Atasan terkait wajib menandatangani form pengajuan ini.",{size:18})),
+            ]
+          })]})],
+        }),
+      ]
+    }]
+  });
+
+  const blob = await Packer.toBlob(doc);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  const safeName = (d.namaCustomer||"Customer").replace(/[^a-zA-Z0-9]/g,"_");
+  a.download = `Form_Referral_${d.noRef||"REF"}_${safeName}.docx`;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  showToast("✅ Dokumen Word berhasil didownload!");
+  document.getElementById("pill3").className = "pill done";
+}
+
+// ── RESET ─────────────────────────────────────────────────────────────────────
+function resetForm() {
+  document.querySelectorAll("input, select, textarea").forEach(el => el.value = "");
+  document.getElementById("jabatanLain").style.display = "none";
+  document.getElementById("ringkasanDisplay").innerHTML =
+    `<span style="color:var(--muted);font-size:12px;">Isi data Referrer & Customer untuk menghasilkan ringkasan otomatis</span>`;
+  document.getElementById("previewContent").innerHTML = `
+    <div class="empty-state">
+      <div class="icon">📄</div>
+      <h3>Dokumen belum dipreview</h3>
+      <p>Isi data di form sebelah kiri,<br>lalu klik <strong>Preview Dokumen</strong></p>
+    </div>`;
+  document.getElementById("btnDownload").disabled = true;
+  document.getElementById("pill1").className = "pill active";
+  document.getElementById("pill2").className = "pill";
+  document.getElementById("pill3").className = "pill";
+  formData = {};
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+</script>
+</body>
+</html>

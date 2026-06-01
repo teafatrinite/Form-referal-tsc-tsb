@@ -1026,13 +1026,18 @@ function sendToSheets(d) {
       keterangan:      d.keterangan      || "",
       waktuSubmit:     new Date().toLocaleString("id-ID"),
     });
-    // Gunakan Image trick — paling kompatibel di semua browser/HP
-    const img = new Image();
-    img.src = GOOGLE_SCRIPT_URL + "?" + params.toString();
+    // Gunakan script tag injection — bypass CORS di semua browser
+    const script = document.createElement("script");
+    script.src = GOOGLE_SCRIPT_URL + "?" + params.toString() + "&callback=_gsCallback";
+    script.onerror = () => script.remove();
+    script.onload = () => script.remove();
+    document.body.appendChild(script);
+    setTimeout(() => { if (script.parentNode) script.remove(); }, 5000);
   } catch(e) {
     console.warn("Gagal kirim ke Sheets:", e);
   }
 }
+window._gsCallback = function() {};
 
 // ── RESET ─────────────────────────────────────────────────────────────────────
 function resetForm() {

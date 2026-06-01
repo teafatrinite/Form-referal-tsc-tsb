@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Form Pengajuan Insentif Referral</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js"></script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap');
 
@@ -386,7 +386,7 @@
         </div>
         <div class="form-group">
           <label>Sektor</label>
-          <select id="sektor" onchange="liveUpdate()">
+          <select id="sektor" onchange="toggleSektorLain(); liveUpdate()">
             <option value="">— Pilih Sektor —</option>
             <option>Manufaktur / Industri Pengolahan</option>
             <option>Perdagangan & Retail</option>
@@ -399,6 +399,7 @@
             <option>Properti & Konstruksi</option>
             <option>Lainnya</option>
           </select>
+          <input type="text" id="sektorLain" placeholder="Sebutkan sektor lainnya..." oninput="liveUpdate()" style="display:none; margin-top:6px; width:100%; padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:13px;">
         </div>
         <div class="form-group">
           <label>Industri</label>
@@ -489,6 +490,9 @@
 <script>
 // ── GLOBALS ──────────────────────────────────────────────────────────────────
 let formData = {};
+
+// ── GOOGLE SHEETS CONFIG ── Ganti dengan URL Apps Script kamu ────────────────
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyuLVq8RqeqgAcT-wQTplzK3sfg5GMOXgw0Ly9lsv4B8Lj9GsfmdZXTtXMk1f92npO_/exec";
 const NAMA_BP  = "Tiara Armelia";
 const NAMA_CBO = "Narita Eliani";
 
@@ -524,6 +528,18 @@ function toggleJabatanLain() {
   }
 }
 
+function toggleSektorLain() {
+  const sel = document.getElementById("sektor");
+  const inp = document.getElementById("sektorLain");
+  if (sel.value === "Lainnya") {
+    inp.style.display = "block";
+    inp.focus();
+  } else {
+    inp.style.display = "none";
+    inp.value = "";
+  }
+}
+
 // ── LIVE UPDATE (collect form data + build ringkasan) ─────────────────────────
 function liveUpdate() {
   const jabatanRaw = v("jabatan");
@@ -547,7 +563,7 @@ function liveUpdate() {
     jabatanPIC:   v("jabatanPIC"),
     noHpCustomer: v("noHpCustomer"),
     cabangPenjualan: v("cabangPenjualan"),
-    sektor:       v("sektor"),
+    sektor:       (() => { const s = v("sektor"); return s === "Lainnya" ? (v("sektorLain") || "Lainnya") : s; })(),
     industri:     v("industri"),
     hubungan:     v("hubungan"),
     pax:          v("pax"),
@@ -867,34 +883,40 @@ async function downloadDocx() {
     ]
   });
 
+  const _appRoles = ["Diajukan Oleh\n(Referrer)", "Diketahui\n(Head/CFO/COO)", "Diverifikasi\n(Business Performance)", "Disetujui\n(CBO/Direksi)"];
+  const _appNames = [d.namaReferrer || "_______________", d.namaDiketahui || "_______________", NAMA_BP, NAMA_CBO];
+
   const appTable = new Table({
     width: { size: 9206, type: WidthType.DXA },
     columnWidths: [2301, 2301, 2302, 2302],
     rows: [
       secTitle("G. APPROVAL FLOW"),
-      new TableRow({ children: [
-        ["Diajukan Oleh\n(Referrer)", "Diketahui\n(Head/CFO/COO)", "Diverifikasi\n(Business Performance)", "Disetujui\n(CBO/Direksi)"]
-        .map(role => new TableCell({
-          borders, shading:{fill:"DEEAF1",type:ShadingType.CLEAR}, margins:{top:80,bottom:80,left:100,right:100},
-          children:[p(f(role,{bold:true,color:"1F497D",size:18}),{alignment:AlignmentType.CENTER})]
+      new TableRow({
+        cantSplit: true,
+        children: _appRoles.map(role => new TableCell({
+          borders,
+          shading: { fill: "DEEAF1", type: ShadingType.CLEAR },
+          margins: { top: 80, bottom: 80, left: 100, right: 100 },
+          children: [p(f(role, { bold: true, color: "1F497D", size: 18 }), { alignment: AlignmentType.CENTER })]
         }))
-      ]}),
-      new TableRow({ children: [
-        [
-          d.namaReferrer || "_______________",
-          d.namaDiketahui || "_______________",
-          NAMA_BP,
-          NAMA_CBO,
-        ].map((nm, i) => new TableCell({
-          borders, margins:{top:80,bottom:80,left:100,right:100},
-          children:[
-            p(f("       ",{size:32}),{alignment:AlignmentType.CENTER}),
-            new Paragraph({border:{top:{style:BorderStyle.SINGLE,size:4,color:"333333"}}, alignment:AlignmentType.CENTER, children:[f("(tanda tangan)",{color:"AAAAAA",size:16,italic:true})]}),
-            p(f(nm,{size:18, bold: i>=2, color: i>=2 ? "1F497D" : "000000"}),{alignment:AlignmentType.CENTER}),
-            p(f("Tgl: ___________",{size:16,color:"AAAAAA"}),{alignment:AlignmentType.CENTER}),
+      }),
+      new TableRow({
+        cantSplit: true,
+        children: _appNames.map((nm, i) => new TableCell({
+          borders,
+          margins: { top: 100, bottom: 100, left: 100, right: 100 },
+          children: [
+            p(f("\n\n", { size: 28 }), { alignment: AlignmentType.CENTER }),
+            new Paragraph({
+              border: { top: { style: BorderStyle.SINGLE, size: 4, color: "333333" } },
+              alignment: AlignmentType.CENTER,
+              children: [f("(tanda tangan)", { color: "AAAAAA", size: 16, italic: true })]
+            }),
+            p(f(nm, { size: 18, bold: i >= 2, color: i >= 2 ? "1F497D" : "000000" }), { alignment: AlignmentType.CENTER }),
+            p(f("Tgl: ___________", { size: 16, color: "AAAAAA" }), { alignment: AlignmentType.CENTER }),
           ]
         }))
-      ]}),
+      }),
     ]
   });
 
@@ -940,7 +962,7 @@ async function downloadDocx() {
               children:[p(f("Referensi ini dibuat dengan sebenarnya berdasarkan data dan informasi dari customer. Apabila di kemudian hari ditemukan ketidaksesuaian data, maka Referrer bersedia untuk dilakukan verifikasi lebih lanjut sesuai ketentuan yang berlaku."),{alignment:AlignmentType.JUSTIFIED})]})]}),
           ]
         }),
-        p("", { spacing:{ after:100 }}),
+        p("", { spacing:{ after:60 }}),
         appTable,
         p("", { spacing:{ after:80 }}),
         // Catatan
@@ -971,8 +993,48 @@ async function downloadDocx() {
   a.click();
   URL.revokeObjectURL(url);
 
+  sendToSheets(d);
   showToast("✅ Dokumen Word berhasil didownload!");
   document.getElementById("pill3").className = "pill done";
+}
+
+// ── KIRIM DATA KE GOOGLE SHEETS ──────────────────────────────────────────────
+async function sendToSheets(d) {
+  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI")) return;
+  try {
+    const payload = {
+      noRef:          d.noRef        || "",
+      tanggal:        d.tanggal      || "",
+      namaReferrer:   d.namaReferrer || "",
+      idKaryawan:     d.idKaryawan   || "",
+      jabatan:        d.jabatan      || "",
+      divisi:         d.divisi       || "",
+      cabang:         d.cabang       || "",
+      noHpRef:        d.noHpRef      || "",
+      emailRef:       d.emailRef     || "",
+      noRek:          d.noRek        || "",
+      namaCustomer:   d.namaCustomer || "",
+      namaPIC:        d.namaPIC      || "",
+      jabatanPIC:     d.jabatanPIC   || "",
+      noHpCustomer:   d.noHpCustomer || "",
+      cabangPenjualan:d.cabangPenjualan || "",
+      sektor:         d.sektor       || "",
+      industri:       d.industri     || "",
+      hubungan:       d.hubungan     || "",
+      pax:            d.pax          || "",
+      namaDiketahui:  d.namaDiketahui|| "",
+      keterangan:     d.keterangan   || "",
+      waktuSubmit:    new Date().toLocaleString("id-ID"),
+    };
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  } catch(e) {
+    console.warn("Gagal kirim ke Sheets:", e);
+  }
 }
 
 // ── RESET ─────────────────────────────────────────────────────────────────────

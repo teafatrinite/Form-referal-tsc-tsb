@@ -492,7 +492,7 @@
 let formData = {};
 
 // ── GOOGLE SHEETS CONFIG ── Ganti dengan URL Apps Script kamu ────────────────
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz3MjBs8T4EPz1-anBFicf0kzn89SLm_0uT6GEhjvJDpwIB_ADn5p2TxbdR-HhHoqEs/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGptScQ9oMvE32oPKuVBlj0HWkdCHQTwQuYWEGC19GDmWusJz5KGFPQXVmbu-BDYxH/exec";
 const NAMA_BP  = "Tiara Armelia";
 const NAMA_CBO = "Narita Eliani";
 
@@ -1002,35 +1002,34 @@ async function downloadDocx() {
 async function sendToSheets(d) {
   if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI")) return;
   try {
-    const payload = {
-      noRef:          d.noRef        || "",
-      tanggal:        d.tanggal      || "",
-      namaReferrer:   d.namaReferrer || "",
-      idKaryawan:     d.idKaryawan   || "",
-      jabatan:        d.jabatan      || "",
-      divisi:         d.divisi       || "",
-      cabang:         d.cabang       || "",
-      noHpRef:        d.noHpRef      || "",
-      emailRef:       d.emailRef     || "",
-      noRek:          d.noRek        || "",
-      namaCustomer:   d.namaCustomer || "",
-      namaPIC:        d.namaPIC      || "",
-      jabatanPIC:     d.jabatanPIC   || "",
-      noHpCustomer:   d.noHpCustomer || "",
-      cabangPenjualan:d.cabangPenjualan || "",
-      sektor:         d.sektor       || "",
-      industri:       d.industri     || "",
-      hubungan:       d.hubungan     || "",
-      pax:            d.pax          || "",
-      namaDiketahui:  d.namaDiketahui|| "",
-      keterangan:     d.keterangan   || "",
-      waktuSubmit:    new Date().toLocaleString("id-ID"),
-    };
-    await fetch(GOOGLE_SCRIPT_URL, {
-      method: "POST",
+    const params = new URLSearchParams({
+      noRef:           d.noRef           || "",
+      tanggal:         d.tanggal         || "",
+      namaReferrer:    d.namaReferrer    || "",
+      idKaryawan:      d.idKaryawan      || "",
+      jabatan:         d.jabatan         || "",
+      divisi:          d.divisi          || "",
+      cabang:          d.cabang          || "",
+      noHpRef:         d.noHpRef         || "",
+      emailRef:        d.emailRef        || "",
+      noRek:           d.noRek           || "",
+      namaCustomer:    d.namaCustomer    || "",
+      namaPIC:         d.namaPIC         || "",
+      jabatanPIC:      d.jabatanPIC      || "",
+      noHpCustomer:    d.noHpCustomer    || "",
+      cabangPenjualan: d.cabangPenjualan || "",
+      sektor:          d.sektor          || "",
+      industri:        d.industri        || "",
+      hubungan:        d.hubungan        || "",
+      pax:             d.pax             || "",
+      namaDiketahui:   d.namaDiketahui   || "",
+      keterangan:      d.keterangan      || "",
+      waktuSubmit:     new Date().toLocaleString("id-ID"),
+    });
+    // Gunakan GET + URLSearchParams untuk menghindari CORS preflight
+    await fetch(GOOGLE_SCRIPT_URL + "?" + params.toString(), {
+      method: "GET",
       mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
     });
   } catch(e) {
     console.warn("Gagal kirim ke Sheets:", e);
